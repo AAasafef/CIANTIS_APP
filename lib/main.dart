@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'screens/dashboard/dashboard_screen.dart';
+import 'screens/privacy/privacy_lock_screen.dart';
 import 'services/documents_service.dart';
 
 Future<void> main() async {
@@ -31,7 +31,7 @@ class CiantisApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: const DashboardScreen(),
+      home: const PrivacyLockScreen(),
     );
   }
 }
