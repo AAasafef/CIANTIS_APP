@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>CIANTIS Spaces — Mockup Auditions</title>
+<style>
+:root{--ink:#1d1c19;--cream:#f3eee6;--taupe:#d7cbbb;--deep:#20221d;--glass:rgba(245,239,231,.78)}
+*{box-sizing:border-box} html,body{margin:0;background:#efe9e0;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body{min-height:100vh;background:radial-gradient(circle at top,#fffdf8 0,#eee6dc 48%,#e6ddd1 100%)}
+header{padding:28px 22px 14px;text-align:center} header h1{margin:0;font:500 34px/1.05 Georgia,serif} header p{margin:8px auto 0;max-width:640px;color:#6f675d;font-size:14px}
+.gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;padding:18px;max-width:1100px;margin:0 auto 54px}
+.option-card{border:0;background:rgba(255,255,255,.48);padding:10px;border-radius:24px;box-shadow:0 14px 34px rgba(65,50,36,.11);cursor:pointer;transition:.2s ease;text-align:left}
+.option-card:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(65,50,36,.16)}
+.option-card img{display:block;width:100%;aspect-ratio:.77;object-fit:cover;border-radius:18px}
+.option-meta{display:flex;align-items:center;gap:10px;padding:11px 5px 4px}.option-meta span{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#ded2c2;font-size:12px}.option-meta strong{font-size:13px;letter-spacing:.06em;text-transform:uppercase}
+.viewer{position:fixed;inset:0;background:rgba(19,18,16,.88);backdrop-filter:blur(12px);display:none;z-index:20;padding:16px}.viewer.open{display:flex;align-items:center;justify-content:center}
+.shell{width:min(100%,470px);display:flex;flex-direction:column;align-items:center;gap:12px}.topline{width:100%;display:flex;justify-content:space-between;align-items:center;color:#f5efe5;padding:0 2px}
+.titlewrap small{display:block;opacity:.66;font-size:11px;letter-spacing:.14em;text-transform:uppercase}.titlewrap b{font:500 20px Georgia,serif}.close{border:0;color:#fff;background:rgba(255,255,255,.12);width:38px;height:38px;border-radius:50%;font-size:19px;cursor:pointer}
+.phone{width:min(90vw,390px);aspect-ratio:.78;position:relative;border-radius:34px;overflow:hidden;background:#111;box-shadow:0 30px 70px rgba(0,0,0,.45);touch-action:pan-y}.phone img{width:100%;height:100%;object-fit:cover;transition:transform .48s cubic-bezier(.22,.8,.25,1),filter .35s ease;transform:translate3d(0,0,0) scale(1.001)}.phone.moving img{filter:saturate(1.02) contrast(1.01)}
+.swipehint{position:absolute;left:50%;bottom:13px;transform:translateX(-50%);background:rgba(20,20,18,.55);color:white;border:1px solid rgba(255,255,255,.2);font-size:11px;padding:7px 10px;border-radius:999px;backdrop-filter:blur(8px);opacity:.85;pointer-events:none}
+.controls{display:grid;grid-template-columns:48px 1fr 48px;gap:10px;align-items:center;width:min(90vw,390px)}.arrow{height:44px;border:0;border-radius:16px;background:#e8ddcf;color:#292721;font-size:22px;cursor:pointer;box-shadow:0 7px 20px rgba(0,0,0,.14)}
+.state{height:44px;border-radius:16px;display:flex;align-items:center;justify-content:center;gap:8px;background:rgba(255,255,255,.12);color:#eee6dc;border:1px solid rgba(255,255,255,.14);font-size:12px}.dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.3)}.dot.active{background:#ead7bd;transform:scale(1.2)}
+.bottomnav{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;width:min(96vw,620px)}.jump{border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.07);color:#e8e0d6;border-radius:999px;padding:8px 11px;font-size:11px;cursor:pointer}.jump.active{background:#e3d5c2;color:#28251f}.note{color:#cfc4b6;font-size:11px;text-align:center;max-width:390px;line-height:1.4}
+@media(max-width:780px){.gallery{grid-template-columns:1fr 1fr;gap:11px;padding:12px}header h1{font-size:30px}}@media(max-width:520px){.gallery{grid-template-columns:1fr}.option-card img{aspect-ratio:.82}header{padding-top:22px}}
+</style>
+</head>
+<body>
+<header><h1>CIANTIS Spaces — Design Auditions</h1><p>Open any mockup to preview it at phone scale. Swipe left/right on the phone, or use the arrows on desktop, then jump directly to another candidate.</p></header>
+<main class="gallery" id="gallery"></main>
+<section class="viewer" id="viewer" aria-hidden="true"><div class="shell"><div class="topline"><div class="titlewrap"><small id="optionNum">Option 1</small><b id="optionName">Fullscreen Hero</b></div><button class="close" id="close" aria-label="Close">×</button></div><div class="phone" id="phone"><img id="hero" alt=""><div class="swipehint">Swipe or use arrows</div></div><div class="controls"><button class="arrow" id="prevState" aria-label="Previous preview">‹</button><div class="state" id="stateDots"></div><button class="arrow" id="nextState" aria-label="Next preview">›</button></div><div class="bottomnav" id="jumpNav"></div><div class="note">This audition intentionally keeps functionality minimal so you can judge the layout and motion without changing the mockup design.</div></div></section>
+<script>
+const options = REPLACE_OPTIONS;
+const gallery=document.getElementById('gallery');
+gallery.innerHTML=Object.entries(options).map(([i,o])=>`<button class="option-card" data-option="${i}" aria-label="Open option ${i}"><img src="${o.img}" alt="CIANTIS Spaces option ${i}: ${o.name}"><div class="option-meta"><span>${i}</span><strong>${o.name}</strong></div></button>`).join('');
+const viewer=document.getElementById('viewer'),hero=document.getElementById('hero'),phone=document.getElementById('phone'),optionNum=document.getElementById('optionNum'),optionName=document.getElementById('optionName'),stateDots=document.getElementById('stateDots'),jumpNav=document.getElementById('jumpNav');
+let current=1,state=0,startX=null;const states=[0,1,2];
+function renderDots(){stateDots.innerHTML=states.map((_,i)=>`<span class="dot ${i===state?'active':''}"></span>`).join('')}
+function motion(){const transforms=['translate3d(0,0,0) scale(1.001)','translate3d(-1.8%,0,0) scale(1.025)','translate3d(1.8%,0,0) scale(1.018)'];phone.classList.add('moving');hero.style.transform=transforms[state];renderDots();setTimeout(()=>phone.classList.remove('moving'),420)}
+function jump(i){current=i;state=0;hero.src=options[i].img;hero.alt=`CIANTIS Spaces option ${i}: ${options[i].name}`;optionNum.textContent=`Option ${i} of 9`;optionName.textContent=options[i].name;[...jumpNav.children].forEach((b,idx)=>b.classList.toggle('active',idx+1===i));motion()}
+function openViewer(i){viewer.classList.add('open');viewer.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';jump(i)}function closeViewer(){viewer.classList.remove('open');viewer.setAttribute('aria-hidden','true');document.body.style.overflow=''}
+document.querySelectorAll('.option-card').forEach(b=>b.addEventListener('click',()=>openViewer(+b.dataset.option)));document.getElementById('close').onclick=closeViewer;viewer.addEventListener('click',e=>{if(e.target===viewer)closeViewer()});document.getElementById('nextState').onclick=()=>{state=(state+1)%3;motion()};document.getElementById('prevState').onclick=()=>{state=(state+2)%3;motion()};for(let i=1;i<=9;i++){const b=document.createElement('button');b.className='jump';b.textContent=`${i}`;b.title=options[i].name;b.onclick=()=>jump(i);jumpNav.appendChild(b)}phone.addEventListener('pointerdown',e=>{startX=e.clientX;phone.setPointerCapture(e.pointerId)});phone.addEventListener('pointerup',e=>{if(startX===null)return;const dx=e.clientX-startX;if(Math.abs(dx)>36){state=(state+(dx<0?1:2))%3;motion()}startX=null});document.addEventListener('keydown',e=>{if(!viewer.classList.contains('open'))return;if(e.key==='Escape')closeViewer();if(e.key==='ArrowRight'){state=(state+1)%3;motion()}if(e.key==='ArrowLeft'){state=(state+2)%3;motion()}});renderDots();
+</script>
+</body>
+</html>
